@@ -1,12 +1,12 @@
 #!/bin/bash
 
 DISTRO=Armbian_20.11_Odroidxu4_buster_legacy_4.14.204.img.xz
+DISTRO=ubuntu-20.04.1-5.4-minimal-odroid-xu4-20200812.img.xz
 
 [ -z "${1}" ] && { echo "Usage: $0 [DEVICE] # e.g. /dev/sdc"; exit; }
 [ -f ${DISTRO} ] || {
-	echo Distro not found. Getting it...
-	wget https://mirrors.dotsrc.org/armbian-dl/odroidxu4/archive/${DISTRO}
-	echo Done.
+	echo Distro not found.
+	exit 1
 }
 
 xz -d - < ${DISTRO} | sudo dd of=${1} bs=4096

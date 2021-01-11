@@ -37,7 +37,7 @@ Please provide your real name (eg. John Doe): RodolfoAP
 ```
 
 * Change the password!
-* If required, change de locale to en_US.UTF8: `dpkg-reconfigure locales`
+* If required, change the locale to en_US.UTF8: `dpkg-reconfigure locales`
 * Modify the hostname: `vi -o /etc/hosts /etc/hostname`
 * Get the ethernet card name using `ifconfig`.
 * `./gen.etc-network-interfaces` can be used to generate the `/etc/network/interfaces` file.
@@ -125,7 +125,7 @@ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
 echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
 apt-get update
 apt-get install -y kubeadm kubectl kubectx # Master
-apt-get install -y kubeadm kubelet kubectx # Workers
+apt-get install -y kubeadm kubelet         # Workers
 ```
 
 * You can check _cgroups_ validity:
@@ -243,6 +243,7 @@ Shortcuts:
 
 Apparently the solution was to:
 
-	* Include `--apiserver-advertise-address=0.0.0.0` in `kubeadm init`;
-	* include `cgroupDriver: systemd` in `/var/lib/kubelet/config.yaml` before installing Flannel;
-	* include `failSwapOn: false` in `/var/lib/kubelet/config.yaml` before installing Flannel.
+	* [DISCARDED] Include `--apiserver-advertise-address=0.0.0.0` in `kubeadm init`;
+	* [DISCARDED] include `cgroupDriver: systemd` in `/var/lib/kubelet/config.yaml` before installing Flannel;
+	* [DISCARDED] include `failSwapOn: false` in `/var/lib/kubelet/config.yaml` before installing Flannel.
+	* Delete the configuration "--port=0" in `/etc/kubernetes/manifests/controller-manager.conf` and `/etc/kubernetes/manifests/scheduler.conf` (verifiable with `kc get cs`).
