@@ -8,9 +8,14 @@ This is a setup reference to install and run a small Odroid-MC1+Armbian+Kubernet
 
 ## Odroid setup
 
+* Look for Armbian versions here:
+
+	* https://archive.armbian.com/odroidxu4/archive/
+	* https://mirrors.netix.net/armbian/dl/odroidxu4/archive/
+
 * Download armbian on this directory.
 ```
-wget https://mirrors.netix.net/armbian/dl/odroidxu4/archive/Armbian_20.08.1_Odroidxu4_buster_legacy_4.14.195.img.xz
+wget https://mirrors.netix.net/armbian/dl/odroidxu4/archive/Armbian_21.02.1_Odroidxu4_buster_legacy_4.14.212.img.xz
 ```
 
 * Put an SD card to some slot. Find the device it is referred on (e.g. `/dev/sdc1`).
@@ -26,18 +31,23 @@ root@192.168.1.26's password: 1234
 New root password: ************
 Repeat password: ************
 ...
-Do you want to set locales and console keyboard automatically from your location [Y/n] N
-...
 Please provide a username (eg. your forename): rodolfoap
 Create password: ************
 Repeat password: ************
-...
-Please provide your real name (eg. John Doe): RodolfoAP
 ...
 ```
 
 * Change the password!
 * If required, change the locale to en_US.UTF8: `dpkg-reconfigure locales`
+
+## Simple Configuration
+
+* `./apply.config`
+* `armbian-config` # System -> Other (Y) -> Choose the last kernel, e.g. `linux-image-dev-odroidxu4/20/08/01, 5.7.15-odroidxu4`
+* Jump to the **Kubernetes** section.
+
+## Detailed Configuration
+
 * Modify the hostname: `vi -o /etc/hosts /etc/hostname`
 * Get the ethernet card name using `ifconfig`.
 * `./gen.etc-network-interfaces` can be used to generate the `/etc/network/interfaces` file.

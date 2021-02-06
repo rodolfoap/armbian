@@ -1,0 +1,361 @@
+$ ssh mc1
+  ___      _           _     _  __  ___   _ _  _   
+ / _ \  __| |_ __ ___ (_) __| | \ \/ / | | | || |  
+| | | |/ _` | '__/ _ \| |/ _` |  \  /| | | | || |_ 
+| |_| | (_| | | | (_) | | (_| |  /  \| |_| |__   _|
+ \___/ \__,_|_|  \___/|_|\__,_| /_/\_\\___/   |_|  
+                                                   
+Welcome to Armbian 21.02.1 Buster with Linux 5.10.12-odroidxu4
+
+System load:   1%           	Up time:       5 min		
+Memory usage:  4% of 1.95G  	IP:            192.168.1.91
+CPU temp:      37°C           	Usage of /:    2% of 57G    	
+
+[ General system configuration (beta): armbian-config ]
+
+Last login: Sat Feb  6 03:41:43 2021 from 192.168.1.50
+
+[mc1] /root # swapoff -a
+
+[mc1] /root # curl -sL get.docker.com|sh
+
+# Executing docker install script, commit: 3d8fe77c2c46c5b7571f94b42793905e5b3e42e4
++ sh -c apt-get update -qq >/dev/null
++ sh -c DEBIAN_FRONTEND=noninteractive apt-get install -y -qq apt-transport-https ca-certificates curl >/dev/null
++ sh -c curl -fsSL "https://download.docker.com/linux/debian/gpg" | apt-key add -qq - >/dev/null
+Warning: apt-key output should not be parsed (stdout is not a terminal)
++ sh -c echo "deb [arch=armhf] https://download.docker.com/linux/debian buster stable" > /etc/apt/sources.list.d/docker.list
++ sh -c apt-get update -qq >/dev/null
++ [ -n  ]
++ sh -c apt-get install -y -qq --no-install-recommends docker-ce >/dev/null
++ sh -c docker version
+Client: Docker Engine - Community
+ Version:           20.10.3
+ API version:       1.41
+ Go version:        go1.13.15
+ Git commit:        48d30b5
+ Built:             Fri Jan 29 14:34:34 2021
+ OS/Arch:           linux/arm
+ Context:           default
+ Experimental:      true
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          20.10.3
+  API version:      1.41 (minimum version 1.12)
+  Go version:       go1.13.15
+  Git commit:       46229ca
+  Built:            Fri Jan 29 14:32:37 2021
+  OS/Arch:          linux/arm
+  Experimental:     false
+ containerd:
+  Version:          1.4.3
+  GitCommit:        269548fa27e0089a8b8278fc4fc781d7f65a939b
+ runc:
+  Version:          1.0.0-rc92
+  GitCommit:        ff819c7e9184c13b7c2607fe6c30ae19403a7aff
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+If you would like to use Docker as a non-root user, you should now consider
+adding your user to the "docker" group with something like:
+
+  sudo usermod -aG docker your-user
+
+Remember that you will have to log out and back in for this to take effect!
+
+WARNING: Adding a user to the "docker" group will grant the ability to run
+         containers which can be used to obtain root privileges on the
+         docker host.
+         Refer to https://docs.docker.com/engine/security/security/#docker-daemon-attack-surface
+         for more information.
+
+[mc1] /root # usermod -aG docker rodolfoap
+
+[mc1] /root # curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+OK
+
+[mc1] /root # echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+
+[mc1] /root # apt-get update
+
+Hit:1 http://security.debian.org buster/updates InRelease
+Hit:2 http://deb.debian.org/debian buster InRelease                                         
+Hit:3 http://deb.debian.org/debian buster-updates InRelease                                 
+Hit:4 http://deb.debian.org/debian buster-backports InRelease                               
+Hit:5 https://download.docker.com/linux/debian buster InRelease                                     
+Get:6 https://packages.cloud.google.com/apt kubernetes-xenial InRelease [9,383 B]                   
+Hit:7 https://imola.armbian.com/apt buster InRelease                                 
+Get:8 https://packages.cloud.google.com/apt kubernetes-xenial/main armhf Packages [42.6 kB]
+Fetched 52.0 kB in 4s (12.9 kB/s) 
+Reading package lists... Done
+
+[mc1] /root # apt-get install -y kubeadm kubectl kubectx # Master
+
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following additional packages will be installed:
+  conntrack cri-tools ebtables kubelet kubernetes-cni socat
+Suggested packages:
+  nftables
+The following NEW packages will be installed:
+  conntrack cri-tools ebtables kubeadm kubectl kubectx kubelet kubernetes-cni socat
+0 upgraded, 9 newly installed, 0 to remove and 0 not upgraded.
+Need to get 59.9 MB of archives.
+After this operation, 248 MB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian buster/main armhf conntrack armhf 1:1.4.5-2 [29.7 kB]
+Get:2 http://deb.debian.org/debian buster/main armhf ebtables armhf 2.0.10.4+snapshot20181205-3 [78.5 kB]
+Get:3 http://deb.debian.org/debian buster/main armhf socat armhf 1.7.3.2-2 [334 kB]
+Get:4 http://deb.debian.org/debian buster/main armhf kubectx all 0.6.2-1 [5,256 B]
+Get:5 https://packages.cloud.google.com/apt kubernetes-xenial/main armhf cri-tools armhf 1.13.0-01 [7,903 kB]
+Get:6 https://packages.cloud.google.com/apt kubernetes-xenial/main armhf kubernetes-cni armhf 0.8.7-00 [22.3 MB]
+Get:7 https://packages.cloud.google.com/apt kubernetes-xenial/main armhf kubelet armhf 1.20.2-00 [16.0 MB]
+Get:8 https://packages.cloud.google.com/apt kubernetes-xenial/main armhf kubectl armhf 1.20.2-00 [6,704 kB]        
+Get:9 https://packages.cloud.google.com/apt kubernetes-xenial/main armhf kubeadm armhf 1.20.2-00 [6,489 kB]        
+Fetched 59.9 MB in 9s (6,892 kB/s)                                                                                 
+Selecting previously unselected package conntrack.
+(Reading database ... 37584 files and directories currently installed.)
+Preparing to unpack .../0-conntrack_1%3a1.4.5-2_armhf.deb ...
+Unpacking conntrack (1:1.4.5-2) ...
+Selecting previously unselected package cri-tools.
+Preparing to unpack .../1-cri-tools_1.13.0-01_armhf.deb ...
+Unpacking cri-tools (1.13.0-01) ...
+Selecting previously unselected package ebtables.
+Preparing to unpack .../2-ebtables_2.0.10.4+snapshot20181205-3_armhf.deb ...
+Unpacking ebtables (2.0.10.4+snapshot20181205-3) ...
+Selecting previously unselected package kubernetes-cni.
+Preparing to unpack .../3-kubernetes-cni_0.8.7-00_armhf.deb ...
+Unpacking kubernetes-cni (0.8.7-00) ...
+Selecting previously unselected package socat.
+Preparing to unpack .../4-socat_1.7.3.2-2_armhf.deb ...
+Unpacking socat (1.7.3.2-2) ...
+Selecting previously unselected package kubelet.
+Preparing to unpack .../5-kubelet_1.20.2-00_armhf.deb ...
+Unpacking kubelet (1.20.2-00) ...
+Selecting previously unselected package kubectl.
+Preparing to unpack .../6-kubectl_1.20.2-00_armhf.deb ...
+Unpacking kubectl (1.20.2-00) ...
+Selecting previously unselected package kubeadm.
+Preparing to unpack .../7-kubeadm_1.20.2-00_armhf.deb ...
+Unpacking kubeadm (1.20.2-00) ...
+Selecting previously unselected package kubectx.
+Preparing to unpack .../8-kubectx_0.6.2-1_all.deb ...
+Unpacking kubectx (0.6.2-1) ...
+Setting up conntrack (1:1.4.5-2) ...
+Setting up kubectl (1.20.2-00) ...
+Setting up ebtables (2.0.10.4+snapshot20181205-3) ...
+Setting up socat (1.7.3.2-2) ...
+Setting up kubectx (0.6.2-1) ...
+Setting up cri-tools (1.13.0-01) ...
+Setting up kubernetes-cni (0.8.7-00) ...
+Setting up kubelet (1.20.2-00) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/kubelet.service → /lib/systemd/system/kubelet.service.
+Setting up kubeadm (1.20.2-00) ...
+Processing triggers for man-db (2.8.5-2) ...
+Processing triggers for libc-bin (2.28-10) ...
+
+[mc1] /root # wget https://raw.githubusercontent.com/docker/docker/master/contrib/check-config.sh -O cgroups_check && chmod +x    cgroups_check
+
+--2021-02-06 03:50:51--  https://raw.githubusercontent.com/docker/docker/master/contrib/check-config.sh
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.120.133
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.120.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 11176 (11K) [text/plain]
+Saving to: ‘cgroups_check’
+
+cgroups_check                100%[==============================================>]  10.91K  --.-KB/s    in 0.003s  
+
+2021-02-06 03:50:52 (3.65 MB/s) - ‘cgroups_check’ saved [11176/11176]
+
+[mc1] /root # ./cgroups_check
+
+info: reading kernel config from /proc/config.gz ...
+
+Generally Necessary:
+- cgroup hierarchy: properly mounted [/sys/fs/cgroup]
+- CONFIG_NAMESPACES: enabled
+- CONFIG_NET_NS: enabled
+- CONFIG_PID_NS: enabled
+- CONFIG_IPC_NS: enabled
+- CONFIG_UTS_NS: enabled
+- CONFIG_CGROUPS: enabled
+- CONFIG_CGROUP_CPUACCT: enabled
+- CONFIG_CGROUP_DEVICE: enabled
+- CONFIG_CGROUP_FREEZER: enabled
+- CONFIG_CGROUP_SCHED: enabled
+- CONFIG_CPUSETS: enabled
+- CONFIG_MEMCG: enabled
+- CONFIG_KEYS: enabled
+- CONFIG_VETH: enabled (as module)
+- CONFIG_BRIDGE: enabled (as module)
+- CONFIG_BRIDGE_NETFILTER: enabled (as module)
+- CONFIG_IP_NF_FILTER: enabled (as module)
+- CONFIG_IP_NF_TARGET_MASQUERADE: enabled (as module)
+- CONFIG_NETFILTER_XT_MATCH_ADDRTYPE: enabled (as module)
+- CONFIG_NETFILTER_XT_MATCH_CONNTRACK: enabled (as module)
+- CONFIG_NETFILTER_XT_MATCH_IPVS: enabled (as module)
+- CONFIG_IP_NF_NAT: enabled (as module)
+- CONFIG_NF_NAT: enabled (as module)
+- CONFIG_POSIX_MQUEUE: enabled
+
+Optional Features:
+- CONFIG_USER_NS: enabled
+- CONFIG_SECCOMP: enabled
+- CONFIG_CGROUP_PIDS: enabled
+- CONFIG_MEMCG_SWAP: enabled
+    (cgroup swap accounting is currently enabled)
+- CONFIG_BLK_CGROUP: enabled
+- CONFIG_BLK_DEV_THROTTLING: enabled
+- CONFIG_CGROUP_PERF: missing
+- CONFIG_CGROUP_HUGETLB: missing
+- CONFIG_NET_CLS_CGROUP: enabled (as module)
+- CONFIG_CGROUP_NET_PRIO: enabled
+- CONFIG_CFS_BANDWIDTH: enabled
+- CONFIG_FAIR_GROUP_SCHED: enabled
+- CONFIG_RT_GROUP_SCHED: enabled
+- CONFIG_IP_NF_TARGET_REDIRECT: enabled (as module)
+- CONFIG_IP_VS: enabled (as module)
+- CONFIG_IP_VS_NFCT: enabled
+- CONFIG_IP_VS_PROTO_TCP: enabled
+- CONFIG_IP_VS_PROTO_UDP: enabled
+- CONFIG_IP_VS_RR: enabled (as module)
+- CONFIG_EXT3_FS: enabled
+- CONFIG_EXT3_FS_XATTR: missing
+- CONFIG_EXT3_FS_POSIX_ACL: enabled
+- CONFIG_EXT3_FS_SECURITY: enabled
+    (enable these ext3 configs if you are using ext3 as backing filesystem)
+- CONFIG_EXT4_FS: enabled
+- CONFIG_EXT4_FS_POSIX_ACL: enabled
+- CONFIG_EXT4_FS_SECURITY: enabled
+- Network Drivers:
+  - "overlay":
+    - CONFIG_VXLAN: enabled (as module)
+    - CONFIG_BRIDGE_VLAN_FILTERING: enabled
+      Optional (for encrypted networks):
+      - CONFIG_CRYPTO: enabled
+      - CONFIG_CRYPTO_AEAD: enabled
+      - CONFIG_CRYPTO_GCM: enabled (as module)
+      - CONFIG_CRYPTO_SEQIV: enabled
+      - CONFIG_CRYPTO_GHASH: enabled (as module)
+      - CONFIG_XFRM: enabled
+      - CONFIG_XFRM_USER: enabled (as module)
+      - CONFIG_XFRM_ALGO: enabled
+      - CONFIG_INET_ESP: enabled (as module)
+  - "ipvlan":
+    - CONFIG_IPVLAN: enabled (as module)
+  - "macvlan":
+    - CONFIG_MACVLAN: enabled (as module)
+    - CONFIG_DUMMY: enabled (as module)
+  - "ftp,tftp client in container":
+    - CONFIG_NF_NAT_FTP: enabled (as module)
+    - CONFIG_NF_CONNTRACK_FTP: enabled (as module)
+    - CONFIG_NF_NAT_TFTP: enabled (as module)
+    - CONFIG_NF_CONNTRACK_TFTP: enabled (as module)
+- Storage Drivers:
+  - "aufs":
+    - CONFIG_AUFS_FS: enabled (as module)
+  - "btrfs":
+    - CONFIG_BTRFS_FS: enabled (as module)
+    - CONFIG_BTRFS_FS_POSIX_ACL: enabled
+  - "devicemapper":
+    - CONFIG_BLK_DEV_DM: enabled
+    - CONFIG_DM_THIN_PROVISIONING: enabled (as module)
+  - "overlay":
+    - CONFIG_OVERLAY_FS: enabled (as module)
+  - "zfs":
+    - /dev/zfs: missing
+    - zfs command: missing
+    - zpool command: missing
+
+Limits:
+- /proc/sys/kernel/keys/root_maxkeys: 1000000
+
+[mc1] /root # kubeadm config images pull
+
+[config/images] Pulled k8s.gcr.io/kube-apiserver:v1.20.2
+[config/images] Pulled k8s.gcr.io/kube-controller-manager:v1.20.2
+[config/images] Pulled k8s.gcr.io/kube-scheduler:v1.20.2
+[config/images] Pulled k8s.gcr.io/kube-proxy:v1.20.2
+[config/images] Pulled k8s.gcr.io/pause:3.2
+[config/images] Pulled k8s.gcr.io/etcd:3.4.13-0
+[config/images] Pulled k8s.gcr.io/coredns:1.7.0
+
+[mc1] /root # kubeadm init --apiserver-advertise-address=0.0.0.0 --pod-network-cidr=10.244.0.0/16 # Common one
+
+[init] Using Kubernetes version: v1.20.2
+[preflight] Running pre-flight checks
+	[WARNING SystemVerification]: this Docker version is not on the list of validated versions: 20.10.3. Latest validated version: 19.03
+	[WARNING SystemVerification]: missing optional cgroups: hugetlb
+[preflight] Pulling images required for setting up a Kubernetes cluster
+[preflight] This might take a minute or two, depending on the speed of your internet connection
+[preflight] You can also perform this action in beforehand using 'kubeadm config images pull'
+[certs] Using certificateDir folder "/etc/kubernetes/pki"
+[certs] Generating "ca" certificate and key
+[certs] Generating "apiserver" certificate and key
+[certs] apiserver serving cert is signed for DNS names [kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local mc1] and IPs [10.96.0.1 192.168.1.91]
+[certs] Generating "apiserver-kubelet-client" certificate and key
+[certs] Generating "front-proxy-ca" certificate and key
+[certs] Generating "front-proxy-client" certificate and key
+[certs] Generating "etcd/ca" certificate and key
+[certs] Generating "etcd/server" certificate and key
+[certs] etcd/server serving cert is signed for DNS names [localhost mc1] and IPs [192.168.1.91 127.0.0.1 ::1]
+[certs] Generating "etcd/peer" certificate and key
+[certs] etcd/peer serving cert is signed for DNS names [localhost mc1] and IPs [192.168.1.91 127.0.0.1 ::1]
+[certs] Generating "etcd/healthcheck-client" certificate and key
+[certs] Generating "apiserver-etcd-client" certificate and key
+[certs] Generating "sa" key and public key
+[kubeconfig] Using kubeconfig folder "/etc/kubernetes"
+[kubeconfig] Writing "admin.conf" kubeconfig file
+[kubeconfig] Writing "kubelet.conf" kubeconfig file
+[kubeconfig] Writing "controller-manager.conf" kubeconfig file
+[kubeconfig] Writing "scheduler.conf" kubeconfig file
+[kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[kubelet-start] Starting the kubelet
+[control-plane] Using manifest folder "/etc/kubernetes/manifests"
+[control-plane] Creating static Pod manifest for "kube-apiserver"
+[control-plane] Creating static Pod manifest for "kube-controller-manager"
+[control-plane] Creating static Pod manifest for "kube-scheduler"
+[etcd] Creating static Pod manifest for local etcd in "/etc/kubernetes/manifests"
+[wait-control-plane] Waiting for the kubelet to boot up the control plane as static Pods from directory "/etc/kubernetes/manifests". This can take up to 4m0s
+[kubelet-check] Initial timeout of 40s passed.
+[apiclient] All control plane components are healthy after 44.510827 seconds
+[upload-config] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
+[kubelet] Creating a ConfigMap "kubelet-config-1.20" in namespace kube-system with the configuration for the kubelets in the cluster
+[upload-certs] Skipping phase. Please see --upload-certs
+[mark-control-plane] Marking the node mc1 as control-plane by adding the labels "node-role.kubernetes.io/master=''" and "node-role.kubernetes.io/control-plane='' (deprecated)"
+[mark-control-plane] Marking the node mc1 as control-plane by adding the taints [node-role.kubernetes.io/master:NoSchedule]
+[bootstrap-token] Using token: ejuy3z.lpy1zjar9o0w5p0q
+[bootstrap-token] Configuring bootstrap tokens, cluster-info ConfigMap, RBAC Roles
+[bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to get nodes
+[bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
+[bootstrap-token] configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
+[bootstrap-token] configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
+[bootstrap-token] Creating the "cluster-info" ConfigMap in the "kube-public" namespace
+[kubelet-finalize] Updating "/etc/kubernetes/kubelet.conf" to point to a rotatable kubelet client certificate and key
+[addons] Applied essential addon: CoreDNS
+[addons] Applied essential addon: kube-proxy
+
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 192.168.1.91:6443 --token ejuy3z.lpy1zjar9o0w5p0q \
+    --discovery-token-ca-cert-hash sha256:754b5c0754b5c0754b5c0754b5c0754b5c0754b5c0754b5c0754b5c0754b5c07 
+
