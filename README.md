@@ -195,6 +195,8 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 export KUBECONFIG=$HOME/.kube/config
 echo "export KUBECONFIG=$HOME/.kube/config" | tee -a ~/.bashrc
 
+## Flannel
+
 # Required to have a proper flannel configuration, when using the 10.10.0.0/16 network
 # Or, in case of a different CIDR...
 # curl -s https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml|sed 's/10\.244\.0\.0/10.10.0.0/' > kube-flannel.yml
