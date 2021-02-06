@@ -9,5 +9,6 @@ DISTRO=Armbian_21.02.1_Odroidxu4_buster_legacy_4.14.212.img.xz
 	exit 1
 }
 
+set -x
 xz -d - < ${DISTRO} | sudo dd of=${1} bs=4096
 sync

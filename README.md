@@ -134,8 +134,8 @@ usermod -aG docker rodolfoap
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
 apt-get update
-apt-get install -y kubeadm kubectl kubectx # Master
-apt-get install -y kubeadm kubelet         # Workers
+apt-get install -y kubeadm kubectl # Master
+apt-get install -y kubeadm kubelet # Workers
 ```
 
 * You can check _cgroups_ validity:
